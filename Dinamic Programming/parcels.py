@@ -11,21 +11,38 @@ def solution(C):
     return min_cost
 
 def solution_opt(C):
+
+    def build_solution(O):
+        n = len(O)
+        order = [n]
+        while order[-1] > 2:
+            order.append(O[order[-1]-1] + 1)
+        order.reverse()
+        return order
+    
     n = len(C)
+    parcels_order = [0] * n
     min_cost = None
+
     if n < 2:
         min_cost = C[0]
     else:
         prev_1 = 0
         prev_2 = 0
-        min_cost = float('inf') # Cualquier valor sirve; es inmediatamente actualizado
         for i in range(0, n):
-            min_cost = C[i] + min(prev_1, prev_2)
+            min_cost = C[i]
+            if (prev_1 <= prev_2):
+                parcels_order[i] = i - 1
+                min_cost += prev_1
+            else:
+                parcels_order[i] = i - 2
+                min_cost += prev_2
             prev_1, prev_2 = min_cost, prev_1
-    return min_cost
+
+    return min_cost, build_solution(parcels_order)
 
 parcels_costs = [10, 5, 12, 1, 1, 20, 12, 7, 3]
-print("Costos de acceso a pacelas\n")
+print("\nCostos de acceso a pacelas\n")
 for i in range(len(parcels_costs)):
     print(i+1, ":\t", parcels_costs[i], sep="")
 
